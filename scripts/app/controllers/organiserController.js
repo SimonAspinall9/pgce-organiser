@@ -95,7 +95,7 @@ app.controller("OrganiserController", [
     };
 
     $scope.saveEvent = function() {
-      console.log($scope.event);
+      $scope.event.datetime = moment($scope.event.datetime);
       saveCalendarEvent($scope.event);
     };
   }
