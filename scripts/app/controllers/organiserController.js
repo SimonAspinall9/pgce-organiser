@@ -20,13 +20,13 @@ app.controller("OrganiserController", [
 
     var getCalendarEvents = function() {
       return $http.get(
-        "http://pgce-organiser-api.azurewebsites.net/api/calendardates"
+        "https://pgce-organiser-api.azurewebsites.net/api/calendardates"
       );
     };
 
     var saveCalendarEvent = function(event) {
       return $http.post(
-        "http://pgce-organiser-api.azurewebsites.net/api/calendardates",
+        "https://pgce-organiser-api.azurewebsites.net/api/calendardates",
         event
       );
     };
