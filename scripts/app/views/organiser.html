@@ -1,0 +1,72 @@
+<div ng-controller="OrganiserController" ng-init="init()">
+    <div ng-repeat="m in months">
+        <h1 class="border-bottom text-center">{{m.name}}</h1>
+        <div class="row" ng-repeat="weeks in monthWeeks[m.name][0]">
+            <div class="col calendar-date" ng-repeat="d in weeks">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">{{d.date}}</h6>
+                        <div class="alert alert-success" role="alert" ng-if="d.events" ng-repeat="event in d.events">
+                            {{event.name}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="position:relaive">
+    <div style="position:fixed;bottom:10px;right:10px">
+        <button type="button" class="btn btn-primary rounded-circle" style="height:75px;width:75px;" data-toggle="modal" data-target="#exampleModalCenter">
+            <i class="fa fa-lg fa-plus"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Modal -->
+<div ng-controller="OrganiserController" ng-init="initModal()" class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Create new event</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="eventName">Event Name</label>
+                        <input type="text" class="form-control" id="eventName" aria-describedby="titleHelp" placeholder="Enter event name" ng-model="event.name">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="eventDesc">Event Description</label>
+                        <textarea class="form-control" id="eventDesc" rows="3" ng-model="event.desc"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventDate">Event Date</label>
+                        <input type="datetime-local" class="form-control" id="eventDate" aria-describedby="dateHelp" placeholder="Enter event date" ng-model="event.date">
+                    </div>
+                    <div class="form-group">
+                        <label for="eventType">Event Type</label>
+                        <select class="custom-select" id="eventType" ng-model="event.type">
+                            <option selected>Choose...</option>
+                            <option value="1">Assignment</option>
+                            <option value="2">Key Date</option>
+                            <option value="3">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventNotes">Additional Notes</label>
+                        <textarea class="form-control" id="eventNotes" rows="3" ng-model="event.notes"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="saveEvent()">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>

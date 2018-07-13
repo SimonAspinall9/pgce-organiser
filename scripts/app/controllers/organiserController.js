@@ -1,6 +1,7 @@
 app.controller("OrganiserController", [
   "$scope",
-  function($scope) {
+  "$http",
+  function($scope, $http) {
     var getDates = function(startDate, stopDate) {
       var dateArray = [];
       var currentDate = moment(startDate);
@@ -17,38 +18,85 @@ app.controller("OrganiserController", [
       return dateArray;
     };
 
-    $scope.init = function() {
-      this.dates = getDates("2018-09-01", "2019-08-31");
-      console.log(this.dates);
-      $scope.dates = this.dates;
-      $scope.weeks = this.dates.reduce(function(acc, date) {
-        var yearWeek =
-          moment(date).isoWeekYear() + "-" + moment(date).isoWeek();
-        if (typeof acc[yearWeek] === "undefined") {
-          acc[yearWeek] = [];
-        }
+    var getCalendarEvents = function() {
+      return $http.get(
+        "http://pgce-organiser-api.azurewebsites.net/api/calendardates"
+      );
+    };
 
-        acc[yearWeek].push(date);
-
-        return acc;
-      }, {});
+    var saveCalendarEvent = function(event) {
+      return $http.post(
+        "http://pgce-organiser-api.azurewebsites.net/api/calendardates",
+        event
+      );
     };
 
     $scope.months = [
       { id: 9, name: "September" },
       { id: 10, name: "October" },
       { id: 11, name: "November" },
-      { id: 12, name: "December" }
+      { id: 12, name: "December" },
+      { id: 1, name: "January" },
+      { id: 2, name: "February" },
+      { id: 3, name: "March" },
+      { id: 4, name: "April" },
+      { id: 5, name: "May" },
+      { id: 6, name: "June" },
+      { id: 7, name: "July" },
+      { id: 8, name: "August" }
     ];
-  }
-]);
 
-app.filter("filterByMonth", function() {
-  return function(items, month) {
-    if (!month) {
-      return items;
+    var monthWeeks = {};
+
+    $scope.init = function() {
+      var dates = getDates("2018-09-03", "2019-08-31");
+      getCalendarEvents().then(function(resp) {
+        resp.data.forEach(function(e) {
+          dates.find(
+            d =>
+              moment(d.date).format("YYYY-MMM-DD") ===
+              moment(e.date).format("YYYY-MMM-DD")
+          ).events =
+            e.events;
+        });
+      });
+
+      $scope.months.forEach(function(m) {
+        monthWeeks[m.name] = [];
+        dates.filter(function(d) {
+          if (m.id === d.month) {
+            monthWeeks[m.name].push(d);
+          }
+        });
+      });
+
+      var results = {};
+      $scope.months.forEach(function(m) {
+        results[m.name] = [];
+        results[m.name].push(
+          monthWeeks[m.name].reduce(function(r, a) {
+            r[a.weekNumber] = r[a.weekNumber] || [];
+            r[a.weekNumber].push(a);
+            return r;
+          }, {})
+        );
+      });
+      $scope.monthWeeks = results;
+      console.log($scope.monthWeeks);
+    };
+
+    $scope.initModal = function(){
+      $scope.event = {};
     }
 
-    return items;
-  };
-});
+    $scope.padWeek = function(weekLength) {
+      console.log(weekLength);
+      return new Array(7 - weekLength);
+    };
+
+    $scope.saveEvent = function() {
+      console.log($scope.event);
+      saveCalendarEvent($scope.event);
+    };
+  }
+]);
