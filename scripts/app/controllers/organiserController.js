@@ -85,9 +85,9 @@ app.controller("OrganiserController", [
       console.log($scope.monthWeeks);
     };
 
-    $scope.initModal = function(){
+    $scope.initModal = function() {
       $scope.event = {};
-    }
+    };
 
     $scope.padWeek = function(weekLength) {
       console.log(weekLength);
@@ -95,8 +95,6 @@ app.controller("OrganiserController", [
     };
 
     $scope.saveEvent = function() {
-      console.log($scope.event.datetime);
-      $scope.event.datetime = moment($scope.event.datetime);
       saveCalendarEvent($scope.event);
     };
   }
