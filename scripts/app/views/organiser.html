@@ -1,30 +1,30 @@
+<style>
+</style>
+
 <div ng-controller="OrganiserController" ng-init="init()">
-    <div ng-repeat="m in months">
-        <h1 class="border-bottom text-center">{{m.name}}</h1>
-        <div class="row" ng-repeat="weeks in monthWeeks[m.name][0]">
-            <div class="col calendar-date" ng-repeat="d in weeks">
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-muted">{{d.date}}</h6>
-                        <div class="alert alert-success" role="alert" ng-if="d.events" ng-repeat="event in d.events">
-                            {{event.name}}
+    <div ng-repeat="(key, value) in blah">
+        <h1 class="border-bottom text-center">{{key}}</h1>
+        <div class="row seven-cols">
+            <div class="col-1" ng-repeat-start="d in value[0]">
+                <div class="calendar-date card">
+                    <div class="card-body" data-toggle="modal" data-target="#exampleModalCenter" ng-click="click(d.date)">
+                        <h6 class="card-subtitle mb-2 text-muted">{{d.date | date: 'd'}}</h6>
+                        <div ng-if="d.events" ng-repeat="event in d.events">
+                            <div class="alert" ng-class="{'alert-success': event.eventType === 'Assignment', 'alert-primary': event.eventType === 'Key Date', 'alert-secondary': event.eventType === null, 'alert-warning': event.eventType === 'Other'}" role="alert" ng-click="eventClicked(); $event.stopPropagation();">
+                                {{event.name}}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="w-100" ng-if="d.dayOfWeek === 7" ng-repeat-end></div>
         </div>
-    </div>
-</div>
-<div style="position:relaive">
-    <div style="position:fixed;bottom:10px;right:10px">
-        <button type="button" class="btn btn-primary rounded-circle" style="height:75px;width:75px;" data-toggle="modal" data-target="#exampleModalCenter">
-            <i class="fa fa-lg fa-plus"></i>
-        </button>
     </div>
 </div>
 
 <!-- Modal -->
-<div ng-controller="OrganiserController" ng-init="initModal()" class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div ng-controller="OrganiserController" ng-init="initModal()" class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -46,15 +46,15 @@
                     </div>
                     <div class="form-group">
                         <label for="eventDate">Event Date</label>
-                        <input type="datetime-local" class="form-control" id="eventDate" aria-describedby="dateHelp" placeholder="Enter event date" ng-model="event.datetime">
+                        <input type="datetime-local" class="form-control" id="eventDate" aria-describedby="dateHelp" placeholder="Enter event date"
+                            ng-model="event.datetime">
                     </div>
                     <div class="form-group">
                         <label for="eventType">Event Type</label>
-                        <select class="custom-select" id="eventType" ng-model="event.type">
-                            <option selected>Choose...</option>
-                            <option value="1">Assignment</option>
-                            <option value="2">Key Date</option>
-                            <option value="3">Other</option>
+                        <select class="custom-select" id="eventType" ng-model="event.eventType">
+                            <option>Assignment</option>
+                            <option>Key Date</option>
+                            <option>Other</option>
                         </select>
                     </div>
                     <div class="form-group">

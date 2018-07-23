@@ -1,0 +1,64 @@
+html {
+  overflow-y: scroll;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  left: 15px;
+  right: 15px;
+  z-index: 5;
+  background: #fff;
+}
+#main-content {
+  margin-top: 50px;
+}
+.row {
+  margin: inherit;
+  margin-top: 5px;
+}
+.calendar-date {
+  min-height: 50px;
+  height: 100%;
+  width: 100%;
+}
+.seven-cols {
+  display: flex;
+  justify-content: flex-end;
+}
+.seven-cols .col-1 {
+  width: calc(100% / 7);
+  max-width: calc(100% / 7);
+  flex: 0 0 calc(100% / 7);
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.w-100 {
+  margin: 5px auto;
+}
+
+@media (max-width: 576px) {
+  html,
+  body {
+    font-size: 12px;
+  }
+  .seven-cols .col-1 .card {
+    border: 0;
+  }
+  .seven-cols .col-1 .card .card-body {
+    padding: 0 2px;
+  }
+  .alert {
+    padding: 2px 5px;
+    font-size: 10px;
+    margin-bottom: 5px;
+  }
+}
+
+@media (min-width: 576px) {
+  .seven-cols .col-1 {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}

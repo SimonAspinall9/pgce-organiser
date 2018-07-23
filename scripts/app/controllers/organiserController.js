@@ -1,22 +1,31 @@
 app.controller("OrganiserController", [
   "$scope",
   "$http",
-  function($scope, $http) {
+  "$q",
+  function($scope, $http, $q) {
     var getDates = function(startDate, stopDate) {
       var dateArray = [];
       var currentDate = moment(startDate);
       var stopDate = moment(stopDate);
       while (currentDate <= stopDate) {
         dateArray.push({
-          weekNumber: moment(currentDate).isoWeek(),
-          weekYear: moment(currentDate).isoWeekYear(),
           month: moment(currentDate).month() + 1,
-          date: moment(currentDate).format("YYYY-MM-DD")
+          date: moment(currentDate).format("YYYY-MM-DD"),
+          dayOfWeek: moment(currentDate).isoWeekday()
         });
         currentDate = moment(currentDate).add(1, "days");
       }
       return dateArray;
     };
+
+    function weekCount(year, month_number) {
+      var firstOfMonth = new Date(year, month_number - 1, 1);
+      var lastOfMonth = new Date(year, month_number, 0);
+
+      var used = firstOfMonth.getDay() + 6 + lastOfMonth.getDate();
+
+      return Math.ceil(used / 7);
+    }
 
     var getCalendarEvents = function() {
       return $http.get(
@@ -31,25 +40,32 @@ app.controller("OrganiserController", [
       );
     };
 
-    $scope.months = [
-      { id: 9, name: "September" },
-      { id: 10, name: "October" },
-      { id: 11, name: "November" },
-      { id: 12, name: "December" },
-      { id: 1, name: "January" },
-      { id: 2, name: "February" },
-      { id: 3, name: "March" },
-      { id: 4, name: "April" },
-      { id: 5, name: "May" },
-      { id: 6, name: "June" },
-      { id: 7, name: "July" },
-      { id: 8, name: "August" }
+    var months = [
+      { id: 9, name: "September", year: 2018 },
+      { id: 10, name: "October", year: 2018 },
+      { id: 11, name: "November", year: 2018 },
+      { id: 12, name: "December", year: 2018 },
+      { id: 1, name: "January", year: 2019 },
+      { id: 2, name: "February", year: 2019 },
+      { id: 3, name: "March", year: 2019 },
+      { id: 4, name: "April", year: 2019 },
+      { id: 5, name: "May", year: 2019 },
+      { id: 6, name: "June", year: 2019 },
+      { id: 7, name: "July", year: 2019 },
+      { id: 8, name: "August", year: 2019 }
     ];
 
     var monthWeeks = {};
 
     $scope.init = function() {
-      var dates = getDates("2018-09-03", "2019-08-31");
+      var dates = getDates("2018-09-01", "2019-08-31");
+      var blah = {};
+      months.forEach(function(m) {
+        blah[m.name] = [];
+        blah[m.name].push(dates.filter(d => d.month === m.id));
+      });
+      console.log(blah);
+      $scope.blah = blah;
       getCalendarEvents().then(function(resp) {
         resp.data.forEach(function(e) {
           dates.find(
@@ -61,41 +77,43 @@ app.controller("OrganiserController", [
         });
       });
 
-      $scope.months.forEach(function(m) {
-        monthWeeks[m.name] = [];
-        dates.filter(function(d) {
-          if (m.id === d.month) {
-            monthWeeks[m.name].push(d);
-          }
-        });
-      });
-
-      var results = {};
-      $scope.months.forEach(function(m) {
-        results[m.name] = [];
-        results[m.name].push(
-          monthWeeks[m.name].reduce(function(r, a) {
-            r[a.weekNumber] = r[a.weekNumber] || [];
-            r[a.weekNumber].push(a);
-            return r;
-          }, {})
-        );
-      });
-      $scope.monthWeeks = results;
-      console.log($scope.monthWeeks);
+      $scope.click = function(myDate) {
+        console.log(myDate);
+        var el = document.getElementById("eventDate");
+        var momentMyDate = moment(myDate).format("YYYY-MM-DDThh:mm");
+        console.log(momentMyDate);
+        el.value = momentMyDate;
+      };
     };
 
     $scope.initModal = function() {
       $scope.event = {};
     };
 
-    $scope.padWeek = function(weekLength) {
-      console.log(weekLength);
-      return new Array(7 - weekLength);
+    $scope.getPaddingLength = function(dayOfWeek) {
+      return new Array(dayOfWeek - 1);
+    };
+
+    var saveEvent = function(event) {
+      return $q(function(resolve, reject) {
+        if (!event.datetime) {
+          var momentMyDate = moment(
+            document.getElementById("eventDate").value,
+            "YYYY-MM-DDThh:mm"
+          ).toDate();
+          event.datetime = momentMyDate;
+        }
+        console.log(event);
+        saveCalendarEvent(event).then(function() {
+          resolve();
+        });
+      });
     };
 
     $scope.saveEvent = function() {
-      saveCalendarEvent($scope.event);
+      saveEvent($scope.event).then(function() {
+        
+      });
     };
   }
 ]);

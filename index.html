@@ -10,63 +10,21 @@
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
         crossorigin="anonymous">
 
-    <style>
-        html {
-            overflow-y: scroll;
-        }
-
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 5;
-            background: #fff;
-        }
-
-        #main-content {
-            margin-top: 120px;
-        }
-
-        .row {
-            margin: inherit;
-            margin-top: 5px;
-        }
-
-        .calendar-date {
-            min-height: 50px;
-            height: 100%;
-            width: 100%;
-        }
-    </style>
+    <link rel="stylesheet" href="/content/site.css">
 
     <title>Hello, world!</title>
 </head>
 
 <body class="container-fluid" ng-app="app">
     <header>
-        <div class="row">
-            <div class="col calendar-day">
-                <div class="card-body">Monday</div>
-            </div>
-            <div class="col calendar-day">
-                <div class="card-body">Tuesday</div>
-            </div>
-            <div class="col calendar-day">
-                <div class="card-body">Wednesday</div>
-            </div>
-            <div class="col calendar-day">
-                <div class="card-body">Thursday</div>
-            </div>
-            <div class="col calendar-day">
-                <div class="card-body">Friday</div>
-            </div>
-            <div class="col calendar-day">
-                <div class="card-body">Saturday</div>
-            </div>
-            <div class="col calendar-day">
-                <div class="card-body">Sunday</div>
-            </div>
+        <div class="row seven-cols">
+            <div class="col-1 calendar-day">Mon</div>
+            <div class="col-1 calendar-day">Tue</div>
+            <div class="col-1 calendar-day">Wed</div>
+            <div class="col-1 calendar-day">Thu</div>
+            <div class="col-1 calendar-day">Fri</div>
+            <div class="col-1 calendar-day">Sat</div>
+            <div class="col-1 calendar-day">Sun</div>
     </header>
     <div id="main-content" ng-view></div>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
