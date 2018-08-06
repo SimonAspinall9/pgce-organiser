@@ -1,5 +1,6 @@
 html {
   overflow-y: scroll;
+  font-size: 14px;
 }
 
 header {
@@ -18,7 +19,7 @@ header {
   margin-top: 5px;
 }
 .calendar-date {
-  min-height: 50px;
+  min-height: 175px;
   height: 100%;
   width: 100%;
 }
@@ -38,10 +39,37 @@ header {
   margin: 5px auto;
 }
 
+h1 {
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+.card:hover {
+  cursor: pointer;
+}
+
+.card div.new-event, .card:hover div.events:hover + div.new-event {
+  display: none;
+}
+
+.card:hover div.new-event, .card:hover div.new-event.alert {
+  display: block;
+}
+
 @media (max-width: 576px) {
   html,
   body {
-    font-size: 12px;
+    font-size: 10px;
+  }
+
+  h1 {
+    font-size: 16px;
+  }
+  .new-event {
+    display: none !important;
+  }
+  .calendar-date {
+    min-height: 75px;
   }
   .seven-cols .col-1 .card {
     border: 0;
@@ -51,7 +79,7 @@ header {
   }
   .alert {
     padding: 2px 5px;
-    font-size: 10px;
+    font-size: 8px;
     margin-bottom: 5px;
   }
 }

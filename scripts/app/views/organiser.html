@@ -9,11 +9,12 @@
                 <div class="calendar-date card">
                     <div class="card-body" data-toggle="modal" data-target="#exampleModalCenter" ng-click="click(d.date)">
                         <h6 class="card-subtitle mb-2 text-muted">{{d.date | date: 'd'}}</h6>
-                        <div ng-if="d.events" ng-repeat="event in d.events">
+                        <div ng-if="d.events" ng-repeat="event in d.events" class="events">
                             <div class="alert" ng-class="{'alert-success': event.eventType === 'Assignment', 'alert-primary': event.eventType === 'Key Date', 'alert-secondary': event.eventType === null, 'alert-warning': event.eventType === 'Other'}" role="alert" ng-click="eventClicked(); $event.stopPropagation();">
                                 {{event.name}}
                             </div>
                         </div>
+                        <div class="alert alert-secondary new-event" role="alert" ng-click="click(d.date)">Enter new event...</div>
                     </div>
                 </div>
             </div>
