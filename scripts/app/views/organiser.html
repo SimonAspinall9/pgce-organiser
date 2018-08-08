@@ -5,12 +5,12 @@
     <div ng-repeat="(key, value) in blah">
         <h1 class="border-bottom text-center">{{key}}</h1>
         <div class="row seven-cols">
-            <div class="col-1" ng-repeat-start="d in value[0]">
+            <div class="col-1" ng-repeat-start="d in value[0]" ng-class="{'blah': $first && d.dayOfWeek !== 1}">
                 <div class="calendar-date card">
                     <div class="card-body" data-toggle="modal" data-target="#exampleModalCenter" ng-click="click(d.date)">
                         <h6 class="card-subtitle mb-2 text-muted">{{d.date | date: 'd'}}</h6>
-                        <div ng-if="d.events" ng-repeat="event in d.events" class="events">
-                            <div class="alert" ng-class="{'alert-success': event.eventType === 'Assignment', 'alert-primary': event.eventType === 'Key Date', 'alert-secondary': event.eventType === null, 'alert-warning': event.eventType === 'Other'}" role="alert" ng-click="eventClicked(); $event.stopPropagation();">
+                        <div ng-if="d.events" class="events">
+                            <div class="alert" ng-repeat="event in d.events" ng-class="{'alert-success': event.eventType === 'Assignment', 'alert-primary': event.eventType === 'Key Date', 'alert-secondary': event.eventType === null, 'alert-warning': event.eventType === 'Other'}" role="alert" ng-click="eventClicked(); $event.stopPropagation();">
                                 {{event.name}}
                             </div>
                         </div>

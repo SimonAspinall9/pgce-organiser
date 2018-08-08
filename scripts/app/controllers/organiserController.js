@@ -56,16 +56,10 @@ app.controller("OrganiserController", [
     ];
 
     var monthWeeks = {};
+    var dates = getDates("2018-09-01", "2019-08-31");
+    var blah = {};
 
     $scope.init = function() {
-      var dates = getDates("2018-09-01", "2019-08-31");
-      var blah = {};
-      months.forEach(function(m) {
-        blah[m.name] = [];
-        blah[m.name].push(dates.filter(d => d.month === m.id));
-      });
-      console.log(blah);
-      $scope.blah = blah;
       getCalendarEvents().then(function(resp) {
         resp.data.forEach(function(e) {
           dates.find(
@@ -75,15 +69,20 @@ app.controller("OrganiserController", [
           ).events =
             e.events;
         });
-      });
 
-      $scope.click = function(myDate) {
-        console.log(myDate);
-        var el = document.getElementById("eventDate");
-        var momentMyDate = moment(myDate).format("YYYY-MM-DDThh:mm");
-        console.log(momentMyDate);
-        el.value = momentMyDate;
-      };
+        months.forEach(function(m) {
+          blah[m.name] = [];
+          blah[m.name].push(dates.filter(d => d.month === m.id));
+        });
+        console.log(months);
+        $scope.blah = blah;
+      });
+    };
+
+    $scope.click = function(myDate) {
+      var el = document.getElementById("eventDate");
+      var momentMyDate = moment(myDate).format("YYYY-MM-DDThh:mm");
+      el.value = momentMyDate;
     };
 
     $scope.initModal = function() {
@@ -105,14 +104,14 @@ app.controller("OrganiserController", [
         }
         console.log(event);
         saveCalendarEvent(event).then(function() {
-          resolve();
+          resolve(event);
         });
       });
     };
 
     $scope.saveEvent = function() {
-      saveEvent($scope.event).then(function() {
-        
+      saveEvent($scope.event).then(function(event) {
+        window.location.reload();
       });
     };
   }
