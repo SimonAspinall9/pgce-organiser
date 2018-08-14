@@ -50,7 +50,6 @@ app.controller("OrganiserController", [
           ).toDate();
           event.datetime = momentMyDate;
         }
-        console.log(event);
         saveCalendarEvent(event).then(function() {
           resolve(event);
         });
@@ -168,7 +167,6 @@ app.controller("OrganiserController", [
         textColor: event.textColor
       });
       $scope.event = event;
-      console.log($scope.event);
     };
 
     $scope.onTypeChange = function(eventType) {
