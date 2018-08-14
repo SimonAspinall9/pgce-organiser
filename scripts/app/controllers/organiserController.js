@@ -35,10 +35,10 @@ app.controller("OrganiserController", [
 
     var saveCalendarEvent = function(event) {
       console.log(event);
-      // return $http.post(
-      //   "https://pgce-organiser-api.azurewebsites.net/api/calendardates",
-      //   event
-      // );
+      return $http.post(
+        "https://pgce-organiser-api.azurewebsites.net/api/calendardates",
+        event
+      );
     };
 
     var saveEvent = function(event) {
