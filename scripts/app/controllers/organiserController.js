@@ -138,6 +138,7 @@ app.controller("OrganiserController", [
     };
 
     $scope.saveEvent = function() {
+      console.log($scope.event);
       saveEvent($scope.event).then(function(event) {
         window.location.reload();
       });
