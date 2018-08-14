@@ -10,7 +10,7 @@
                     <div class="card-body" data-toggle="modal" data-target="#exampleModalCenter" ng-click="click(d.date)">
                         <h6 class="card-subtitle mb-2 text-muted">{{d.date | date: 'd'}}</h6>
                         <div ng-if="d.events" class="events">
-                            <div class="alert" ng-repeat="event in d.events" ng-class="{'alert-success': event.eventType === 'Assignment', 'alert-primary': event.eventType === 'Key Date', 'alert-secondary': event.eventType === null, 'alert-warning': event.eventType === 'Other'}" role="alert" ng-click="eventClicked(); $event.stopPropagation();">
+                            <div class="alert" ng-repeat="event in d.events" style="background-color:{{event.color}};color:{{event.textColor}};" role="alert" ng-click="eventClicked(); $event.stopPropagation();">
                                 {{event.name}}
                             </div>
                         </div>
@@ -52,11 +52,29 @@
                     </div>
                     <div class="form-group">
                         <label for="eventType">Event Type</label>
-                        <select class="custom-select" id="eventType" ng-model="event.eventType">
+                        <select class="custom-select" id="eventType" ng-model="event.eventType" ng-change="onTypeChange(event.eventType)">
                             <option>Assignment</option>
                             <option>Key Date</option>
                             <option>Other</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <div class="alert" id="exampleEvent">{{event.name || 'Example Event'}}</div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col">
+                                <label for="eventColour">Background Colour</label>
+                                <br />
+                                <input type='text' id="eventColor" class="form-control selectColor" style="max-width:50px;" ng-model="event.colour" />
+                            </div>
+                            <div class="col">
+                                <label for="eventTextColour">Text Colour</label>
+                                <br/>
+                                <input type='text' id="eventTextColor" class="form-control selectColor" style="max-width:50px;" ng-model="event.textColour"
+                                />
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="eventNotes">Additional Notes</label>
@@ -65,9 +83,41 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="initModal()">Close</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="saveEvent()">Save changes</button>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    $("#eventColor").spectrum({
+        showInput: true,
+        preferredFormat: "hex",
+        showPalette: true,
+        showSelectionPalette: true,
+        palette: ['#cce5ff', '#d4edda', '#fff3cd'],
+        localStorageKey: "spectrum.colors",
+        appendTo: "#exampleModalCenter",
+        move: function (color) {
+            $('#exampleEvent').css({
+                'background-color': color.toHexString()
+            });
+        }
+    });
+    $("#eventTextColor").spectrum({
+        showInput: true,
+        preferredFormat: "hex",
+        showPalette: true,
+        showSelectionPalette: true,
+        palette: ['#004085', '#155724', '#856404'],
+        localStorageKey: "spectrum.textColors",
+        appendTo: "#exampleModalCenter",
+        move: function (color) {
+            $('#exampleEvent').css({
+                'color': color.toHexString()
+            });
+        }
+    });
+</script>
+</script>

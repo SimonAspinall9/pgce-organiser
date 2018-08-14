@@ -34,10 +34,26 @@ app.controller("OrganiserController", [
     };
 
     var saveCalendarEvent = function(event) {
-      return $http.post(
-        "https://pgce-organiser-api.azurewebsites.net/api/calendardates",
-        event
-      );
+      console.log(event);
+      // return $http.post(
+      //   "https://pgce-organiser-api.azurewebsites.net/api/calendardates",
+      //   event
+      // );
+    };
+
+    var saveEvent = function(event) {
+      return $q(function(resolve, reject) {
+        if (!event.datetime) {
+          var momentMyDate = moment(
+            document.getElementById("eventDate").value,
+            "YYYY-MM-DDThh:mm"
+          ).toDate();
+          event.datetime = momentMyDate;
+        }
+        saveCalendarEvent(event).then(function() {
+          resolve(event);
+        });
+      });
     };
 
     var months = [
@@ -55,6 +71,21 @@ app.controller("OrganiserController", [
       { id: 8, name: "August", year: 2019 }
     ];
 
+    var defaultColors = {
+      Assignment: {
+        color: "#d4edda",
+        textColor: "#155724"
+      },
+      "Key Date": {
+        color: "#cce5ff",
+        textColor: "#004085"
+      },
+      Other: {
+        color: "#fff3cd",
+        textColor: "#856404"
+      }
+    };
+
     var monthWeeks = {};
     var dates = getDates("2018-09-01", "2019-08-31");
     var blah = {};
@@ -66,8 +97,7 @@ app.controller("OrganiserController", [
             d =>
               moment(d.date).format("YYYY-MMM-DD") ===
               moment(e.date).format("YYYY-MMM-DD")
-          ).events =
-            e.events;
+          ).events = e.events;
         });
 
         months.forEach(function(m) {
@@ -93,20 +123,18 @@ app.controller("OrganiserController", [
       return new Array(dayOfWeek - 1);
     };
 
-    var saveEvent = function(event) {
-      return $q(function(resolve, reject) {
-        if (!event.datetime) {
-          var momentMyDate = moment(
-            document.getElementById("eventDate").value,
-            "YYYY-MM-DDThh:mm"
-          ).toDate();
-          event.datetime = momentMyDate;
-        }
-        console.log(event);
-        saveCalendarEvent(event).then(function() {
-          resolve(event);
+    $scope.onTypeChange = function(eventType) {
+      var colors = defaultColors[eventType];
+      if (colors) {
+        $("#eventColor").spectrum("set", colors.color);
+        $("#eventTextColor").spectrum("set", colors.textColor);
+        $("#exampleEvent").css({
+          "background-color": colors.color
         });
-      });
+        $("#exampleEvent").css({
+          color: colors.textColor
+        });
+      }
     };
 
     $scope.saveEvent = function() {
