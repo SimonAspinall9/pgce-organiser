@@ -10,7 +10,8 @@
                     <div class="card-body" data-toggle="modal" data-target="#exampleModalCenter" ng-click="click(d.date)">
                         <h6 class="card-subtitle mb-2 text-muted">{{d.date | date: 'd'}}</h6>
                         <div ng-if="d.events" class="events">
-                            <div class="alert" ng-repeat="event in d.events" style="background-color:{{event.color}};color:{{event.textColor}};" role="alert" ng-click="eventClicked(); $event.stopPropagation();">
+                            <div class="alert" data-toggle="modal" data-target="#exampleModalCenter" ng-repeat="event in d.events" style="background-color:{{event.color}};color:{{event.textColor}};" role="alert"
+                                ng-click="eventClicked(event); $event.stopPropagation(); $('#exampleModalCenter').modal('show');">
                                 {{event.name}}
                             </div>
                         </div>
@@ -36,6 +37,7 @@
             </div>
             <div class="modal-body">
                 <form>
+                    <input type="hidden" id="eventId" value="">
                     <div class="form-group">
                         <label for="eventName">Event Name</label>
                         <input type="text" class="form-control" id="eventName" aria-describedby="titleHelp" placeholder="Enter event name" ng-model="event.name">
@@ -83,7 +85,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="initModal()">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="clearForm()">Close</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="saveEvent()">Save changes</button>
             </div>
         </div>
@@ -119,5 +121,4 @@
             });
         }
     });
-</script>
 </script>

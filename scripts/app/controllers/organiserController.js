@@ -2,7 +2,8 @@ app.controller("OrganiserController", [
   "$scope",
   "$http",
   "$q",
-  function($scope, $http, $q) {
+  "$timeout",
+  function($scope, $http, $q, $timeout) {
     var getDates = function(startDate, stopDate) {
       var dateArray = [];
       var currentDate = moment(startDate);
@@ -49,6 +50,7 @@ app.controller("OrganiserController", [
           ).toDate();
           event.datetime = momentMyDate;
         }
+        console.log(event);
         saveCalendarEvent(event).then(function() {
           resolve(event);
         });
@@ -107,18 +109,66 @@ app.controller("OrganiserController", [
       });
     };
 
-    $scope.click = function(myDate) {
-      var el = document.getElementById("eventDate");
-      var momentMyDate = moment(myDate).format("YYYY-MM-DDThh:mm");
-      el.value = momentMyDate;
+    var something = function(values) {
+      document.getElementById("exampleModalCenterTitle").innerHTML =
+        values.title || "Create new event";
+      document.getElementById("eventId").value = values.id || "";
+      document.getElementById("eventName").value = values.name || "";
+      document.getElementById("eventDesc").value = values.desc || "";
+      document.getElementById("eventDate").value = values.date;
+      document.getElementById("eventType").value = values.type || "";
+      document.getElementById("eventNotes").value = values.notes || "";
+      document.getElementById("exampleEvent").innerText =
+        values.example || "Example Event";
+      $("#eventColor").spectrum("set", values.color || "#ffffff");
+      $("#eventTextColor").spectrum("set", values.textColor || "#000000");
+      $("#exampleEvent").css({
+        "background-color": values.color || "#ffffff",
+        color: values.textColor || "#000000"
+      });
     };
 
     $scope.initModal = function() {
       $scope.event = {};
     };
 
-    $scope.getPaddingLength = function(dayOfWeek) {
-      return new Array(dayOfWeek - 1);
+    $scope.click = function(myDate) {
+      something({
+        date: moment(myDate).format("YYYY-MM-DDThh:mm")
+      });
+      $scope.event = {};
+    };
+
+    $scope.clearForm = function() {
+      something({
+        title: "",
+        id: "",
+        name: "",
+        desc: "",
+        type: "",
+        notes: "",
+        example: "Example Event",
+        color: "#ffffff",
+        textColor: "#000000"
+      });
+    };
+
+    $scope.eventClicked = function(event) {
+      $("#exampleModalCenter").modal("show");
+      something({
+        title: "Edit event",
+        id: event.id,
+        name: event.name,
+        desc: event.description,
+        date: moment(event.dateTime).format("YYYY-MM-DDThh:mm"),
+        type: event.eventType,
+        notes: event.additionalNotes,
+        example: event.name,
+        color: event.color,
+        textColor: event.textColor
+      });
+      $scope.event = event;
+      console.log($scope.event);
     };
 
     $scope.onTypeChange = function(eventType) {
@@ -127,16 +177,23 @@ app.controller("OrganiserController", [
         $("#eventColor").spectrum("set", colors.color);
         $("#eventTextColor").spectrum("set", colors.textColor);
         $("#exampleEvent").css({
-          "background-color": colors.color
-        });
-        $("#exampleEvent").css({
+          "background-color": colors.color,
           color: colors.textColor
         });
       }
     };
 
     $scope.saveEvent = function() {
-      saveEvent($scope.event).then(function(event) {
+      saveEvent({
+        id: document.getElementById("eventId").value,
+        name: document.getElementById("eventName").value,
+        description: document.getElementById("eventDesc").value,
+        dateTime: document.getElementById("eventDate").value,
+        eventType: document.getElementById("eventType").value,
+        additionalNotes: document.getElementById("eventNotes").value,
+        color: $("#eventColor").spectrum("get").toHexString(),
+        textColor: $("#eventTextColor").spectrum("get").toHexString()
+      }).then(function(event) {
         window.location.reload();
       });
     };
