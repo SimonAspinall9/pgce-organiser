@@ -34,7 +34,6 @@ app.controller("OrganiserController", [
     };
 
     var saveCalendarEvent = function(event) {
-      console.log(event);
       return $http.post(
         "https://pgce-organiser-api.azurewebsites.net/api/calendardates",
         event
@@ -104,7 +103,6 @@ app.controller("OrganiserController", [
           blah[m.name] = [];
           blah[m.name].push(dates.filter(d => d.month === m.id));
         });
-        console.log(months);
         $scope.blah = blah;
       });
     };
@@ -138,7 +136,6 @@ app.controller("OrganiserController", [
     };
 
     $scope.saveEvent = function() {
-      console.log($scope.event);
       saveEvent($scope.event).then(function(event) {
         window.location.reload();
       });
