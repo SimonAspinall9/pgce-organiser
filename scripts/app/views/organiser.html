@@ -1,17 +1,20 @@
 <style>
+.today {
+    background: #e9e9e9 !important;
+}
 </style>
 
 <div ng-controller="OrganiserController" ng-init="init()">
-    <div ng-repeat="(key, value) in blah">
+    <div ng-repeat="(key, value) in blah" id="{{key}}">
         <h1 class="border-bottom text-center">{{key}}</h1>
         <div class="row seven-cols">
             <div class="col-1" ng-repeat-start="d in value[0]" ng-class="{'blah': $first && d.dayOfWeek !== 1}">
-                <div class="calendar-date card">
+                <div class="calendar-date card" ng-class="getTodayClass(d.date)">
                     <div class="card-body" data-toggle="modal" data-target="#exampleModalCenter" ng-click="click(d.date)">
                         <h6 class="card-subtitle mb-2 text-muted">{{d.date | date: 'd'}}</h6>
                         <div ng-if="d.events" class="events">
                             <div class="alert" data-toggle="modal" data-target="#exampleModalCenter" ng-repeat="event in d.events" style="background-color:{{event.color}};color:{{event.textColor}};" role="alert"
-                                ng-click="eventClicked(event); $event.stopPropagation(); $('#exampleModalCenter').modal('show');">
+                                ng-click="eventClicked(event); $event.stopPropagation();">
                                 {{event.name}}
                             </div>
                         </div>

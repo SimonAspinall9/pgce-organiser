@@ -3,7 +3,8 @@ app.controller("OrganiserController", [
   "$http",
   "$q",
   "$timeout",
-  function($scope, $http, $q, $timeout) {
+  "$anchorScroll",
+  function($scope, $http, $q, $timeout, $anchorScroll) {
     var getDates = function(startDate, stopDate) {
       var dateArray = [];
       var currentDate = moment(startDate);
@@ -56,6 +57,17 @@ app.controller("OrganiserController", [
       });
     };
 
+    var getTodaysDate = function() {
+      this.today = new Date();
+      this.minDate = new Date("2018-09-01");
+
+      if (this.today < this.minDate) {
+        return this.minDate;
+      } else {
+        return this.today;
+      }
+    };
+
     var months = [
       { id: 9, name: "September", year: 2018 },
       { id: 10, name: "October", year: 2018 },
@@ -90,22 +102,43 @@ app.controller("OrganiserController", [
     var dates = getDates("2018-09-01", "2019-08-31");
     var blah = {};
 
-    $scope.init = function() {
-      getCalendarEvents().then(function(resp) {
-        resp.data.forEach(function(e) {
-          dates.find(
-            d =>
-              moment(d.date).format("YYYY-MMM-DD") ===
-              moment(e.date).format("YYYY-MMM-DD")
-          ).events = e.events;
-        });
+    var today = getTodaysDate();
 
-        months.forEach(function(m) {
-          blah[m.name] = [];
-          blah[m.name].push(dates.filter(d => d.month === m.id));
+    $scope.init = function() {
+      getCalendarEvents()
+        .then(function(resp) {
+          resp.data.forEach(function(e) {
+            dates.find(
+              d =>
+                moment(d.date).format("YYYY-MMM-DD") ===
+                moment(e.date).format("YYYY-MMM-DD")
+            ).events = e.events.sort(function(a, b) {
+              var dateA = new Date(a.dateTime),
+                dateB = new Date(b.dateTime);
+              return dateA - dateB;
+            });
+          });
+
+          months.forEach(function(m) {
+            blah[m.name] = [];
+            blah[m.name].push(dates.filter(d => d.month === m.id));
+          });
+          $scope.blah = blah;
+        })
+        .then(function() {
+          $timeout(function() {
+            $anchorScroll.yOffset = 50;
+            $anchorScroll(moment(today).format("MMMM"));
+          });
         });
-        $scope.blah = blah;
-      });
+    };
+
+    $scope.getTodayClass = function(date) {
+      this.momentToday = moment(today).format("YYYY-MM-DD");
+      this.momentDate = moment(date).format("YYYY-MM-DD");
+      if (this.momentToday === this.momentDate) {
+        return "today";
+      }
     };
 
     var something = function(values) {
@@ -125,6 +158,10 @@ app.controller("OrganiserController", [
         "background-color": values.color || "#ffffff",
         color: values.textColor || "#000000"
       });
+    };
+
+    $scope.isTodaysDate = function() {
+      console.log("blah");
     };
 
     $scope.initModal = function() {
@@ -189,8 +226,12 @@ app.controller("OrganiserController", [
         dateTime: document.getElementById("eventDate").value,
         eventType: document.getElementById("eventType").value,
         additionalNotes: document.getElementById("eventNotes").value,
-        color: $("#eventColor").spectrum("get").toHexString(),
-        textColor: $("#eventTextColor").spectrum("get").toHexString()
+        color: $("#eventColor")
+          .spectrum("get")
+          .toHexString(),
+        textColor: $("#eventTextColor")
+          .spectrum("get")
+          .toHexString()
       }).then(function(event) {
         window.location.reload();
       });
